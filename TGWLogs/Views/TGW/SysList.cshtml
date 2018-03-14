@@ -1,0 +1,84 @@
+﻿@model TGWLogs.ViewModels.SysInfoViewModels
+
+@{
+    ViewBag.Title = "SystemList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/PagedList.css")
+
+<h2>系統資訊</h2>
+
+<p>
+    @Html.ActionLink("Create New", "InsSysInfo")
+</p>
+
+@using (Html.BeginForm("SysList", "TGW", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row form-group">
+        <div class="col-sm-4">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => Model.SysName, new { @class = "control-label col-sm-4" })
+                <div class="row col-sm-8">
+                    @Html.TextBoxFor(model => Model.SysName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-12">
+                @Html.LabelFor(model => Model.GrpName, new { @class = "control-label col-sm-4" })
+                <div class="row col-sm-8">
+                    @Html.TextBoxFor(model => Model.GrpName, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" id="btnSubmit" class="btn btn-primary">進行查詢</button>
+            <button type="button" id="btnNotice" class="btn btn-warning" data-toggle="popover" title="操作注意事項" data-html="true" data-placement="bottom" data-content="1.此功能為維護外部資料來源系統基本資料<br />2.查詢時二欄位均可使用模糊搜尋">注意事項</button>
+        </div>
+        <span>@TempData["ExeRst"]</span>
+        @Html.Hidden("SCodeByDel")
+    </div>
+}
+
+@if (Model != null && Model.SysInfoList.Count() > 0)
+{
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(CN => CN.SysInfoList.FirstOrDefault().SysCode)</th>
+            <th>@Html.DisplayNameFor(CN => CN.SysInfoList.FirstOrDefault().SysName)</th>
+            <th>@Html.DisplayNameFor(CN => CN.SysInfoList.FirstOrDefault().GrpName)</th>
+            <th>@Html.DisplayNameFor(CN => CN.SysInfoList.FirstOrDefault().ModDate)</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.SysInfoList)
+        {
+            <tr>
+                <td>@Html.DisplayFor(CV => item.SysCode)</td>
+                <td>@Html.DisplayFor(CV => item.SysName)</td>
+                <td>@Html.DisplayFor(CV => item.GrpName)</td>
+                <td>@Html.DisplayFor(CV => item.ModDate)</td>
+                <td>
+                    @Html.ActionLink("Update", "UpdSysInfo", new { SCode = item.SysCode, SName = item.SysName, GName = item.GrpName }, new { @class = "btn btn-default" }) |
+                    <button type="button" class="btn btn-default" id="btnDelete" onclick="$('#SCodeByDel').val('@item.SysCode');$('form').attr('action','/TGW/DelSysInfo').submit();">刪除</button>
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="text-center">
+        @Html.PagedListPager(Model.SysInfoList, PageIdx => Url.Action("SysList", new { PageIdx, GrpName = Model.GrpName, SysName = Model.SysName }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    </div>
+}
+else
+{
+    <table><tr><th><h4 class="text-warning">【查無資料】或【請重新設定查詢條件】!!</h4></th></tr></table>
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            /*操作注意事項*/
+            $("#btnNotice").popover();
+        });
+    </script>
+}

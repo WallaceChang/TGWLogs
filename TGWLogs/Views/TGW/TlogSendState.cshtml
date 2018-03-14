@@ -1,0 +1,94 @@
+﻿@model TGWLogs.ViewModels.TlogViewModels
+
+@{
+    ViewBag.Title = "TlogSendState";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Tlog傳送狀態查詢</h2>
+<br />
+@using (Html.BeginForm("TlogSendState", "TGW", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="row form-group">
+        @Html.LabelFor(model => model.TxDateST, new { @class = "control-label text-danger col-sm-1" })
+        <div class="row col-sm-2">
+            @Html.TextBoxFor(model => model.TxDateST, new { @class = "form-control", placeholder = "例：2015-01-01", @readonly = "readonly" })
+        </div>
+        @Html.LabelFor(model => model.TxDateED, new { @class = "control-label text-danger col-sm-1" })
+        <div class="row col-sm-2">
+            @Html.TextBoxFor(model => model.TxDateED, new { @class = "form-control", placeholder = "例：2015-01-01", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.LabelFor(model => model.CardNo, new { @class = "control-label col-sm-1" })
+        <div class="row col-sm-3">
+            @Html.TextBoxFor(model => model.CardNo, new { @class = "form-control", placeholder = "please input card no." })
+        </div>
+        <div class="col-sm-5">
+            <button type="submit" id="btnSubmit" class="btn btn-primary">進行查詢</button>
+            <button type="button" id="btnNotice" class="btn btn-warning" data-toggle="popover" title="操作注意事項" data-html="true" data-content="1.顯示筆數建議設定於<span class='badge'>1000</span>以內<br />2.若要更精確顯示查詢結果，可鍵入<span class='badge'>傳送時間</span>、<span class='badge'>卡號</span>進行查詢<br />3.紅色區塊欄位為必填<br />4.回覆碼<span class='badge'>T00004</span>、<span class='badge'>T50000</span>之資料，表示TLCM因內容有異或未定義後續處理程序，詳情請至TLCM查詢" data-placement="right">注意事項</button>
+        </div>
+    </div>
+}
+
+@if (Model != null && Model.TlogSendState.Count() > 0)
+{
+    <table class="table table-responsive">
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().TxType)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().CardNo)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().TxDate)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().RRN)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().SendYet)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().SendDate)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().RtnCode)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TlogSendState.FirstOrDefault().RtnDate)</th>
+        </tr>
+        @foreach (var item in Model.TlogSendState)
+        {
+            <tr>
+                <td>@Html.DisplayFor(ColValue => item.TxType)</td>
+                <td>@Html.DisplayFor(ColValue => item.CardNo)</td>
+                <td>@Html.DisplayFor(ColValue => item.TxDate)</td>
+                <td>@Html.DisplayFor(ColValue => item.RRN)</td>
+                <td>@Html.DisplayFor(ColValue => item.SendYet)</td>
+                <td>@Html.DisplayFor(ColValue => item.SendDate)</td>
+                <td>@Html.Raw(@HttpUtility.HtmlDecode(item.RtnCode))</td>
+                <td>@Html.DisplayFor(ColValue => item.RtnDate)</td>
+            </tr>
+        }
+    </table>
+    <div class="text-center">
+        @Html.PagedListPager(Model.TlogSendState, PageIdx => Url.Action("TlogSendState", "TGW", new { PageIdx, TxDateST = Model.TxDateST, TxDateED = Model.TxDateED, CardNo = Model.CardNo }))
+    </div>
+}
+else
+{
+    <table><tr><th><h4 class="text-warning">【查無資料】或【請重新設定查詢條件】</h4></th></tr></table>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            /*萬年曆*/
+            $("#TxDateST").datepicker({ dateFormat: "yy-mm-dd" });
+            $("#TxDateED").datepicker({ dateFormat: "yy-mm-dd" });
+
+            /*欄位值檢查*/
+            $("#btnSubmit").click(function () {
+                if ($("#TxDateST").val().length != 10) {
+                    alert('起日未輸入');
+                    return false;
+                }
+
+                if ($("#TxDateED").val().length != 10) {
+                    alert('訖日未輸入');
+                    return false;
+                }
+            });
+
+            /*注意事項提示*/
+            $("#btnNotice").popover();
+        });
+    </script>
+}

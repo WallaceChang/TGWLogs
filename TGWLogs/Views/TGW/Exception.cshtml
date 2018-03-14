@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Exception";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>例外狀況</h2>
+
+<div class="text-danger">@ViewBag.ErrMsg</div>
+<br />
+<div>
+    @Html.ActionLink("Back to Home", "Index", "TGW")
+</div>

@@ -1,0 +1,118 @@
+﻿@model TGWLogs.ViewModels.TX300ViewModels
+
+@{
+    ViewBag.Title = "TX300SendState";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    span.badge:hover {
+        cursor: pointer;
+    }
+</style>
+
+<h2>ISO電文傳送狀態查詢(TX300)</h2>
+<br />
+
+@using (Html.BeginForm("TX300SendState", "TGW", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="row form-group">
+        @Html.LabelFor(model => model.SendDateST, new { @class = "control-label text-danger col-sm-1" })
+        <div class="row col-sm-2">
+            @Html.TextBoxFor(model => model.SendDateST, new { @class = "form-control", placeholder = "例：2015-01-01", @readonly = "readonly" })
+        </div>
+        @Html.LabelFor(model => model.SendDateED, new { @class = "control-label text-danger col-sm-1" })
+        <div class="row col-sm-2">
+            @Html.TextBoxFor(model => model.SendDateED, new { @class = "form-control", placeholder = "例：2015-01-01", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="row form-group">
+        @Html.LabelFor(model => model.CardNo, new { @class = "control-label col-sm-1" })
+        <div class="row col-sm-3">
+            @Html.TextBoxFor(model => model.CardNo,new { @class="form-control",placeholder= "please input card no." })
+        </div>
+        <div class="col-sm-5">
+            <button type="submit" id="btnSubmit" class="btn btn-primary">進行查詢</button>
+            <button type="button" id="btnNotice" class="btn btn-warning" data-toggle="popover" title="操作注意事項" data-html="true" data-content="1.顯示筆數建議設定於<span class='badge'>1000</span>以內<br />2.若要更精確顯示查詢結果，可鍵入<span class='badge'>卡號</span>進行查詢<br />3.紅色區塊欄位為必填<br />4.秒差超過<span class='badge'>4</span>秒之交易，除了NCCC處理時間過長之外，亦可能是斷線重連後的結果" data-placement="right">注意事項</button>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" id="divModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    ISO電文
+                    <button type="button" id="btnClose1" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="divISOText" style="word-break:break-all;"></div>
+                <div class="modal-footer">
+                    <button type="button" id="btnClose2" class="btn btn-primary" data-dismiss="modal">關閉視窗</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model != null && Model.TX300SendState.Count() > 0)
+{
+    <table class="table">
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().SeqNo)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().SysName)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().FuncName)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().SendText)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().SendDate)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().RtnCode)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().RtnText)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().RtnDate)</th>
+            <th scope="col">@Html.DisplayNameFor(CN => CN.TX300SendState.FirstOrDefault().GapOfSecs)</th>
+        </tr>
+
+        @foreach (var item in Model.TX300SendState)
+        {
+            <tr>
+                <td>@Html.DisplayFor(CV => item.SeqNo)</td>
+                <td>@Html.DisplayFor(CV => item.SysName)</td>
+                <td>@Html.DisplayFor(CV => item.FuncName)</td>
+                <td>@Html.Raw(@HttpUtility.HtmlDecode(item.SendText))</td>
+                <td>@Html.DisplayFor(CV => item.SendDate)</td>
+                <td>@Html.DisplayFor(CV => item.RtnCode)</td>
+                <td>@Html.Raw(@HttpUtility.HtmlDecode(item.RtnText))</td>
+                <td>@Html.DisplayFor(CV => item.RtnDate)</td>
+                <td>@Html.Raw(@HttpUtility.HtmlDecode(item.GapOfSecs))</td>
+            </tr>
+        }
+    </table>
+    <div class="text-center">
+        @Html.PagedListPager(Model.TX300SendState, PageIdx => Url.Action("TX300SendState", "TGW", new { PageIdx, SendDateST = Model.SendDateST, SendDateED = Model.SendDateED, CardNo = Model.CardNo }))
+    </div>
+}
+else
+{
+    <table><tr><th><h4 class="text-warning">【查無資料】或【請重新設定查詢條件】</h4></th></tr></table>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            /*萬年曆*/
+            $("#SendDateST").datepicker({ dateFormat: "yy-mm-dd" });
+            $("#SendDateED").datepicker({ dateFormat: "yy-mm-dd" });
+
+            /*欄位值輸入檢查*/
+            $("#btnSubmit").click(function () {
+                if ($("#SendDateST").val().length != 10) {
+                    alert('起日未輸入');
+                    return false;
+                }
+
+                if ($("#SendDateED").val().length != 10) {
+                    alert('訖日未輸入');
+                    return false;
+                }
+            });
+
+            /*注意事項提示*/
+            $("#btnNotice").popover();
+        });
+    </script>
+}
+

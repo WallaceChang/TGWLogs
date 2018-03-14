@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TGW Log 查詢系統</h2>
+<br />
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#divTlog" data-toggle="tab"><h4>Tlog傳送狀態</h4></a></li>
+    <li><a href="#divISO" data-toggle="tab"><h4>ISO電文傳送狀態</h4></a></li>
+    <li><a href="#divLogFile" data-toggle="tab"><h4>Log檔案調閱</h4></a></li>
+    <li><a href="#divSysList" data-toggle="tab"><h4>系統資訊維護</h4></a></li>
+</ul>
+<br />
+<div class="tab-content" id="divContent">
+    <div class="tab-pane fade in active" id="divTlog">
+        <ul>
+            <li>COSES 傳送 Token 資料進 TGW</li>
+            <li>TGW 轉送 Token 資料進 TLCM</li>
+            <li>COSES 發動TX300需求給 TGW</li>
+            <li>TGW 轉送TX300需求給 TLCM</li>
+            <li>COSES端負責人【董斌全】；TGW端負責人【張相斌】；TLCM端負責人【謝誼萍】</li>
+        </ul>
+    </div>
+    <div class="tab-pane fade" id="divISO">
+        <ul>
+            <li>TLCM 依據TX300需求傳送參數值給 TGW</li>
+            <li>TGW 組合ISO8583電文傳送 NCCC</li>
+            <li>TLCM 夜間發動TX300需求給 TGW</li>
+        </ul>
+    </div>
+    <div class="tab-pane fade" id="divLogFile">
+        <ul>
+            <li>TLOG資料接收服務Log檔</li>
+            <li>ISO8583電文傳送服務Log檔</li>
+            <li>TLOG轉送TLCM服務Log檔</li>
+        </ul>
+    </div>
+    <div class="tab-pane fade" id="divSysList">
+        <ul>
+            <li>外部資料來源系統(ex:TLCM、eCard..etc)</li>
+            <li>Web Service操作Log串聯資料使用</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - TGW Log 查詢</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/jqueryui")
+    @Scripts.Render("~/bundles/modernizr")
+    <style type="text/css">
+        body {
+            padding-top: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Token Gateway Log", "Index", "TGW", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Tlog傳送狀態", "TlogSendState", "TGW")</li>
+                    <li>@Html.ActionLink("ISO電文傳送狀態", "TX300SendState", "TGW")</li>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown">Log Files<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/TGW/LogFilesList/TLOG">Service Of TLOG</a></li>
+                            <li><a href="/TGW/LogFilesList/TX300">Service Of TX300</a></li>
+                            <li><a href="/TGW/LogFilesList/TLCM">Service Of TLCM</a></li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("系統資訊維護", "SysList", "TGW")</li>
+                    <li>@Html.ActionLink("關於", "About", "TGW")</li>
+                    <li>@Html.ActionLink("連絡方式", "Contact", "TGW")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Token Gateway Log 查詢</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

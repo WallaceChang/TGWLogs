@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TGWLogs.Models.LogFileInfo>
+
+@{
+    ViewBag.Title = "LogFilesList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Service Log 調閱 from 【@ViewData["FileSource"]】</h2>
+
+@using (Html.BeginForm("SendLogFile", "TGW", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <button type="button" id="btnRefresh" class="btn btn-primary">重新整理</button>
+        <button type="submit" id="btnSendMail" class="btn btn-success">寄送Mail</button>
+        <input type="hidden" name="SourceType" value="@ViewData["FileSource"]" />
+    </div>
+
+    if (Model != null && Model.Count() > 0)
+    {
+        <div class="col-sm-12">
+            @foreach (var item in Model)
+            {
+                <div class="thumbnail col-sm-3">
+                    <a href="http://@ViewData["URI"]/@item.FileName" class="thumbnail">
+                        <img src="~/Content/themes/base/images/TextFile.png" />
+                    </a>
+                    <div>
+                        <input type="checkbox" name="LogFileName" value="@item.FileName" />
+                    </div>
+                    <div>
+                        <span class="text-primary lead">@Html.DisplayFor(Info => item.FileName)</span>
+                    </div>
+                    <div>
+                        <span class="text-primary">@Html.DisplayFor(Info => item.LastModTime)</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#btnRefresh").click(function () {
+                location.reload();
+            });
+        });
+    </script>
+}    
